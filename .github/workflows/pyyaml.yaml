@@ -1,0 +1,25 @@
+name: pyyaml-test
+
+on:
+  push:
+    branches: [ release/*, master ]
+  schedule:
+    # Nightly - runs on master
+    - cron:  15 10 * * *
+
+jobs:
+  pyyaml-test:
+    strategy:
+      matrix:
+        python:
+        - python2
+        - python3
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: env | sort
+    - run: |
+        sudo apt-get install cython cython3
+    - run: |
+        make -C packaging/docker test-pyyaml-ci PYTHON=${{ matrix.python }}

@@ -43,12 +43,12 @@ ifeq ($(LIBYAML_TEST_SUITE_RUN_REPO),$(LIBYAML_TEST_SUITE_RUN_REPO_DEFAULT))
 	  git clone --branch $(LIBYAML_TEST_SUITE_RUN_BRANCH) $(LIBYAML_TEST_SUITE_RUN_REPO) $@
     endif
 
-packaging:
-	-git branch --track $@ origin/$@
-	git worktree add --force $@ $@
+docker-build:
+	make -C packaging/docker build
 
-docker-dist: packaging
-	make -C $</docker libyaml-dist
+docker-dist:
+	make -C packaging/docker libyaml-dist
 
-docker-test-pyyaml: packaging
-	make -C $</docker test-pyyaml
+docker-test-pyyaml:
+	make -C packaging/docker test-pyyaml PYTHON=python2
+	make -C packaging/docker test-pyyaml PYTHON=python3
