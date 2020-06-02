@@ -5,9 +5,12 @@ SUBDIRS = include src . tests
 
 EXTRA_DIST = Changes ReadMe.md License CMakeLists.txt doc/doxygen.cfg
 
-LIBYAML_TEST_SUITE_RUN_REPO_DEFAULT := https://github.com/yaml/libyaml
-LIBYAML_TEST_SUITE_RUN_REPO ?= $(LIBYAML_TEST_SUITE_RUN_REPO_DEFAULT)
-LIBYAML_TEST_SUITE_RUN_BRANCH ?= run-test-suite
+LIBYAML_TEST_SUITE_REPO ?= https://github.com/yaml/libyaml-test-suite
+LIBYAML_TEST_SUITE_COMMIT ?= 1f1b00ab6763647d05e44200b63fa62f1d2269a3
+
+# NOTE: Uncomment to use a local copy of libyaml-test-suite
+#   LIBYAML_TEST_SUITE_REPO := ../libyaml-test-suite/.git
+#   LIBYAML_TEST_SUITE_COMMIT ?= devel
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = yaml-0.1.pc
@@ -35,13 +38,8 @@ test-suite: tests/run-test-suite all
 test-all: test test-suite
 
 tests/run-test-suite:
-ifeq ($(LIBYAML_TEST_SUITE_RUN_REPO),$(LIBYAML_TEST_SUITE_RUN_REPO_DEFAULT))
-	  -git branch --track $(LIBYAML_TEST_SUITE_RUN_BRANCH) origin/$(LIBYAML_TEST_SUITE_RUN_BRANCH)
-	  -git worktree prune
-	  git worktree add $@ $(LIBYAML_TEST_SUITE_RUN_BRANCH)
-    else
-	  git clone --branch $(LIBYAML_TEST_SUITE_RUN_BRANCH) $(LIBYAML_TEST_SUITE_RUN_REPO) $@
-    endif
+	  git clone $(LIBYAML_TEST_SUITE_REPO) $@
+	  ( cd $@ && git reset --hard $(LIBYAML_TEST_SUITE_COMMIT) )
 
 packaging:
 	-git branch --track $@ origin/$@
