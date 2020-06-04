@@ -6,7 +6,7 @@ SUBDIRS = include src . tests
 EXTRA_DIST = Changes ReadMe.md License CMakeLists.txt doc/doxygen.cfg
 
 LIBYAML_TEST_SUITE_REPO ?= https://github.com/yaml/libyaml-test-suite
-LIBYAML_TEST_SUITE_COMMIT ?= 1f1b00ab6763647d05e44200b63fa62f1d2269a3
+# LIBYAML_TEST_SUITE_COMMIT ?= 1f1b00ab6763647d05e44200b63fa62f1d2269a3
 
 # NOTE: Uncomment to use a local copy of libyaml-test-suite
 #   LIBYAML_TEST_SUITE_REPO := ../libyaml-test-suite/.git
