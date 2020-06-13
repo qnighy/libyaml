@@ -5,6 +5,8 @@ SUBDIRS = include src . tests
 
 EXTRA_DIST = Changes ReadMe.md License CMakeLists.txt doc/doxygen.cfg
 
+export LIBYAML_ROOT := $(PWD)
+
 LIBYAML_TEST_SUITE_REPO ?= https://github.com/yaml/libyaml-test-suite
 # LIBYAML_TEST_SUITE_COMMIT ?= 1f1b00ab6763647d05e44200b63fa62f1d2269a3
 
@@ -20,33 +22,31 @@ maintainer-clean-local:
 	-find ${builddir} -name Makefile.in -exec rm -f '{}' ';'
 
 distclean-local:
-	rm -fr tests/run-test-suite packaging
+	rm -fr test-suite packaging
 	-git worktree prune
 
-.PHONY: bootstrap
+.PHONY: bootstrap test-suite
 bootstrap: maintainer-clean
 	./bootstrap
 	./configure
 	make
 
+test-all: test test-suite
+
 test: all
 	make -C tests check-TESTS
 
-test-suite: tests/run-test-suite all
-	make -C $< test
-
-test-all: test test-suite
-
-tests/run-test-suite:
-	  git clone $(LIBYAML_TEST_SUITE_REPO) $@
-	  ( cd $@ && git reset --hard $(LIBYAML_TEST_SUITE_COMMIT) )
-
-packaging:
-	-git branch --track $@ origin/$@
-	git worktree add --force $@ $@
+test-suite: all
+	-git clone $(LIBYAML_TEST_SUITE_REPO) $@
+	( cd $@ && git reset --hard $(LIBYAML_TEST_SUITE_COMMIT) )
+	make -C $@ test
 
 docker-dist: packaging
 	make -C $</docker libyaml-dist
 
 docker-test-pyyaml: packaging
 	make -C $</docker test-pyyaml
+
+packaging:
+	-git branch --track $@ origin/$@
+	git worktree add --force $@ $@
