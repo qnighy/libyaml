@@ -31,15 +31,14 @@ jobs:
           echo ::add-path::/usr/local/opt/coreutils/libexec/gnubin
           echo ::add-path::/usr/local/opt/make/libexec/gnubin
         else
-          whoami
           (
             cd /tmp/ || exit
             wget http://ftp.gnu.org/gnu/make/make-4.3.tar.gz
-            tar xvf make-4.3.tar.gz
+            tar xzf make-4.3.tar.gz
             cd make-4.3
             ./configure
             make
-            make install
+            sudo make install
           )
         fi
     - name: Fetch branches
