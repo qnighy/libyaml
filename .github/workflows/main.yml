@@ -39,7 +39,6 @@ jobs:
     - run: ./bootstrap
     - run: ./configure
     - run: make
-    - run: pwd && ls -l tests
     - run: make test-all
 
     - run: |
